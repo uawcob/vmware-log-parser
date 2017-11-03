@@ -2,6 +2,8 @@
 
 Scripts for extracting data from VMware log files.
 
+After processing, the files will be compressed and moved to an archive folder.
+
 ## Installation
 
 You should `git clone` this repository so that updates can easily be pulled.
@@ -14,6 +16,7 @@ Possibly compatible on older/newer versions, but your mileage may vary.
 * GNU bash, version 4.3.48(1)-release (x86_64-pc-linux-gnu)
 * GNU awk 4.1.3, API: 1.1 (GNU MPFR 3.1.4, GNU MP 6.1.0)
 * GNU sed 4.2.2
+* gzip 1.6
 * mysql Ver 14.14 Distrib 5.7.20, for Linux (x86_64) using  EditLine wrapper
 
 ### Database

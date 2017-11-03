@@ -17,10 +17,10 @@ function extract_number()
     sed -n -e "s/^.*$1: \([0-9\.]\+\).*/\1/p" <<< "$summary"
 }
 
-for filename in "$LOG_DIRECTORY"/*.txt; do
-    summary="$(awk '/\[LogonMonitor::LogSummary\] ******************/,/\[LogonMonitor::LogSummary\] ******************/' "$filename")"
+for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
+    summary="$(awk '/\[LogonMonitor::LogSummary\] ******************/,/\[LogonMonitor::LogSummary\] ******************/' "$file")"
 
-    printf -v filename "%q" "$(basename "$filename")"
+    printf -v filename "%q" "$(basename "$file")"
     printf -v username "%q" "$(sed -n -e "s/^.*User: \(.*\),.*/\1/p" <<< "$summary")"
 
     completed_at="$(awk 'END {print $1}' <<< "$summary")"
@@ -70,4 +70,7 @@ for filename in "$LOG_DIRECTORY"/*.txt; do
     )"
 
     echo "$sql" | mysql --host "$MYSQL_HOSTNAME" --user="$MYSQL_USERNAME" "$MYSQL_DATABASE"
+
+    gzip "$file"
+    mv "$file.gz" "$LOGON_LOG_ARCHIVES/"
 done
