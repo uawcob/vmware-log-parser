@@ -20,6 +20,11 @@ function extract_number()
 for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
     summary="$(awk '/\[LogonMonitor::LogSummary\] ******************/,/\[LogonMonitor::LogSummary\] ******************/' "$file")"
 
+    if [ -z "$summary" ]; then
+        mv "$file" "$LOGON_LOG_ERRORS/"
+        continue
+    fi
+
     printf -v filename "%q" "$(basename "$file")"
     printf -v username "%q" "$(sed -n -e "s/^.*User: \(.*\),.*/\1/p" <<< "$summary")"
 
