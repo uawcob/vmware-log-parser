@@ -1,9 +1,11 @@
 #!/bin/bash
 
-set -e
-
 # move to working directory
 cd "$( dirname "${BASH_SOURCE[0]}" )"
+
+( flock -nx 200 || exit 1
+
+set -e
 
 if [ ! -f ../.env ]; then
     echo ".env file not found"
@@ -79,3 +81,5 @@ for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
     gzip "$file"
     mv "$file.gz" "$LOGON_LOG_ARCHIVES/"
 done
+
+) 200> "$( basename "${BASH_SOURCE[0]}" )".lock
