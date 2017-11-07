@@ -1,1 +1,0 @@
-ALTER TABLE logon_times ADD INDEX logon_times_completed_at_index(completed_at)

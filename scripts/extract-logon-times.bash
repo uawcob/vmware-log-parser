@@ -30,7 +30,8 @@ for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
     printf -v filename "%q" "$(basename "$file")"
     printf -v username "%q" "$(sed -n -e "s/^.*User: \(.*\),.*/\1/p" <<< "$summary")"
 
-    completed_at="$(awk 'END {print $1}' <<< "$summary")"
+    completed_at_server="$(date -d "$(stat -c %x "$file")" "+%Y-%m-%dT%T")"
+    completed_at_client="$(awk 'END {print $1}' <<< "$summary")"
 
     total="$(extract_number 'Logon Time')"
     start_to_hive_loaded="$(extract_number 'Logon Start To Hive Loaded Time')"
@@ -46,7 +47,8 @@ for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
 
     sql="INSERT INTO logon_times (\
         filename, \
-        completed_at, \
+        completed_at_server, \
+        completed_at_client, \
         username, \
         total, \
         start_to_hive_loaded, \
@@ -61,7 +63,8 @@ for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
         free_disk_space_available_to_user \
     ) VALUES (\
         '$filename', \
-        '$completed_at', \
+        '$completed_at_server', \
+        '$completed_at_client', \
         '$username', \
         '$total', \
         '$start_to_hive_loaded', \
