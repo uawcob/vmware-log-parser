@@ -20,6 +20,9 @@ function extract_number()
 }
 
 for file in "$LOGON_LOG_DIRECTORY"/*.txt; do
+    # if empty, then no glob and $file is equal to literal asterisk *.txt
+    [ -f "$file" ] || exit 0
+
     summary="$(awk '/\[LogonMonitor::LogSummary\] ******************/,/\[LogonMonitor::LogSummary\] ******************/' "$file")"
 
     if [ -z "$summary" ]; then
