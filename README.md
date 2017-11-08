@@ -43,3 +43,4 @@ For example, schedule an extraction for logon times every 5 minutes with cron.
 ```
 
 Analyze the data stored in MySQL using your tool of choice.
+Here are some [example reports](./sql/reports.sql).
