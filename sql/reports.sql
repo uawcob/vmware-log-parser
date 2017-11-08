@@ -48,6 +48,76 @@ HAVING count_logons > 1
 ORDER BY count_logons DESC;
 
 --------------------------------------------------------------------------------
+-- logon volume
+--------------------------------------------------------------------------------
+
+-- count logons
+SELECT COUNT(id) AS count_logons
+FROM logon_times;
+
+-- count logons in the last 5 minutes
+SELECT COUNT(id) AS count_logons
+FROM logon_times
+WHERE (NOW() - completed_at_server) < 300;
+
+-- number of users
+SELECT COUNT(DISTINCT username) AS count_users
+FROM logon_times;
+
+-- top 10 users
+SELECT username, COUNT(id) AS count_logons
+FROM logon_times
+GROUP BY username
+ORDER BY count_logons DESC
+LIMIT 10;
+
+-- number of users that have only logged on one time
+SELECT COUNT(username) AS count_users
+FROM (
+    SELECT username
+    FROM logon_times
+    GROUP BY username
+    HAVING COUNT(id) = 1
+) sub_query;
+
+-- percent of users that have only logged on one time
+SELECT CONCAT(COUNT(single_users) / (
+    SELECT COUNT(DISTINCT username) FROM logon_times
+) * 100 , '%') AS percent_single_users
+FROM (
+    SELECT username AS single_users
+    FROM logon_times
+    GROUP BY username
+    HAVING COUNT(id) = 1
+) sub_query;
+
+-- average number of user logons
+SELECT AVG(count_logons) AS average_count_logons
+FROM (
+    SELECT COUNT(id) AS count_logons
+    FROM logon_times
+    GROUP BY username
+) sub_query;
+
+-- number of user logons within 1 standard deviation
+-- 68% of users have logged on less than this number of times
+SELECT AVG(count_logons) + (1*STDDEV(count_logons)) AS count_user_logons_std_dev
+FROM (
+    SELECT COUNT(id) AS count_logons
+    FROM logon_times
+    GROUP BY username
+) sub_query;
+
+-- average number of user logons minus users that have only logged on one time
+SELECT AVG(count_logons) AS average_count_logons
+FROM (
+    SELECT COUNT(id) AS count_logons
+    FROM logon_times
+    GROUP BY username
+    HAVING count_logons > 1
+) sub_query;
+
+--------------------------------------------------------------------------------
 -- timezone differences
 --------------------------------------------------------------------------------
 
