@@ -3,6 +3,7 @@
 Scripts for extracting data from VMware log files.
 
 After processing, the files will be compressed and moved to an archive folder.
+Logs with errors will be moved to an errors folder.
 
 ## Installation
 
