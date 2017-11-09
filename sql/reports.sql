@@ -91,6 +91,18 @@ FROM (
     HAVING COUNT(id) = 1
 ) sub_query;
 
+-- Group user count by logon count
+SELECT count_logons, COUNT(username) AS count_users
+FROM (
+    SELECT COUNT(id) AS count_logons, username
+    FROM logon_times
+    GROUP BY username
+    -- Remove outliers
+    -- HAVING COUNT(id) > 3
+) sub_query
+GROUP BY count_logons
+ORDER BY count_logons DESC
+
 -- average number of user logons
 SELECT AVG(count_logons) AS average_count_logons
 FROM (
