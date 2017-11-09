@@ -7,7 +7,7 @@ SELECT AVG(total) AS average_logon
 FROM logon_times;
 
 -- average logon time in the last 5 minutes
-SELECT AVG(total) AS average_logon_last_5_minutes
+SELECT COALESCE(AVG(total), 0) AS average_logon_last_5_minutes
 FROM logon_times
 WHERE (NOW() - completed_at_server) < 300;
 
